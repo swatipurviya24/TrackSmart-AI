@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Teachers | TrackSmart AI</title>
+
+    <style>
+
+    body{
+        font-family:Segoe UI,sans-serif;
+        background:#f4f7fc;
+        padding:30px;
+    }
+
+    .container{
+        background:white;
+        padding:25px;
+        border-radius:15px;
+        box-shadow:0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    h2{
+        color:#1e3a8a;
+        margin-bottom:20px;
+    }
+
+    .top-section{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:20px;
+    }
+
+    .btn{
+        background:#2563eb;
+        color:white;
+        text-decoration:none;
+        padding:12px 18px;
+        border-radius:8px;
+        font-weight:bold;
+    }
+
+    .btn:hover{
+        background:#1d4ed8;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+    }
+
+    table th{
+        background:#2563eb;
+        color:white;
+        padding:12px;
+        text-align:left;
+    }
+
+    table td{
+        padding:12px;
+        border-bottom:1px solid #ddd;
+    }
+
+    tr:hover{
+        background:#f8fafc;
+    }
+
+    .edit-btn{
+        color:#2563eb;
+        text-decoration:none;
+        font-weight:bold;
+    }
+
+    .delete-btn{
+        color:red;
+        text-decoration:none;
+        font-weight:bold;
+    }
+
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="top-section">
+
+        <h2>Manage Teachers</h2>
+
+        <a href="{% url 'add_teacher' %}" class="btn">
+            + Add Teacher
+        </a>
+
+    </div>
+
+    <table>
+
+        <tr>
+            <th>Teacher ID</th>
+            <th>Name</th>
+            <th>Subject</th>
+            <th>Class Assigned</th>
+            <th>Salary</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for teacher in teachers %}
+
+        <tr>
+            <td>{{ teacher.teacher_id }}</td>
+            <td>{{ teacher.name }}</td>
+
+            <td>{{ teacher.subject }}</td>
+
+            <td>{{ teacher.class_assigned }}</td>
+
+            <td>{{ teacher.salary }}</td>
+
+            <td>
+
+                <a href="{% url 'edit_teacher' teacher.id %}"
+                   class="edit-btn">
+                    Edit
+                </a>
+
+                |
+
+                <a href="{% url 'delete_teacher' teacher.id %}"
+                   class="delete-btn"
+                   onclick="return confirm('Delete this teacher?')">
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+            <td colspan="5">
+                No teachers found
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+<a href="{% url 'admin_dashboard' %}"
+   style="
+       display:block;
+       margin-top:20px;
+       text-align:center;
+       color:#2563eb;
+       text-decoration:none;
+       font-weight:600;
+   ">
+    ← Back to  Dashboard
+</a>
+
+</body>
+</html>

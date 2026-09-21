@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Notices | TrackSmart AI</title>
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        /* HEADER */
+
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+        }
+
+        .header h2 {
+            color: #1e3a8a;
+            margin-bottom: 6px;
+        }
+
+        .header h2 i {
+            margin-right: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* NOTICE */
+
+        .notice {
+            background: white;
+            padding: 22px;
+            margin-bottom: 18px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+        }
+
+        .notice h3 {
+            margin-bottom: 8px;
+            color: #2563eb;
+            font-size: 18px;
+        }
+
+        .notice h3 i {
+            margin-right: 7px;
+            font-size: 16px;
+        }
+
+        .date {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        .notice p {
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .audience {
+            display: inline-block;
+            background: #e0ecff;
+            color: #1d4ed8;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* EMPTY */
+
+        .empty {
+            color: #94a3b8;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* BACK */
+
+        .back {
+            display: inline-block;
+            margin-top: 5px;
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .back:hover {
+            color: #1d4ed8;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 600px) {
+
+            .container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h2>
+            <i class="fas fa-bullhorn"></i>
+            Notices
+        </h2>
+
+        <p>
+            Important announcements and updates from the administration.
+        </p>
+
+    </div>
+
+
+    <!-- NOTICES -->
+
+    {% for notice in notices %}
+
+        <div class="notice">
+
+            <h3>
+                <i class="fas fa-bell"></i>
+                {{ notice.title }}
+            </h3>
+
+            <div class="date">
+
+                <i class="far fa-calendar-alt"></i>
+
+                Published: {{ notice.date }}
+
+            </div>
+
+            <p>
+                {{ notice.description }}
+            </p>
+
+            <span class="audience">
+                {{ notice.audience }}
+            </span>
+
+        </div>
+
+    {% empty %}
+
+        <div class="notice">
+
+            <p class="empty">
+                No notices available at the moment.
+            </p>
+
+        </div>
+
+    {% endfor %}
+
+
+    <!-- BACK -->
+
+    <a
+        href="{% url 'dashboard' %}"
+        class="back"
+    >
+
+        ← Back to Dashboard
+
+    </a>
+
+</div>
+
+</body>
+
+</html>

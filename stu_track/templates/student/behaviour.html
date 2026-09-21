@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Behavior | TrackSmart</title>
+
+    <style>
+        body {
+            font-family: Segoe UI, sans-serif;
+            background: #f4f7fc;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f59e0b;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .back {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>🧠 My Behavior Report</h2>
+
+    <table>
+
+        <tr>
+            <th>Behavior</th>
+            <th>Date</th>
+        </tr>
+
+        {% for behavior in behaviors %}
+
+        <tr>
+            <td>{{ behavior.activity }}</td>
+            <td>{{ behavior.timestamp }}</td>
+        </tr>
+
+        {% empty %}
+
+        <tr>
+            <td colspan="2">
+                No behavior records available.
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <a href="{% url 'dashboard' %}" class="back">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

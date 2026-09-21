@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mark Attendance | TrackSmart AI</title>
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            color: #1e293b;
+        }
+
+        .container {
+            width: 520px;
+            max-width: 90%;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        /* HEADER */
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header-icon {
+            width: 55px;
+            height: 55px;
+            margin: 0 auto 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #eff6ff;
+            color: #2563eb;
+
+            border-radius: 12px;
+            font-size: 24px;
+        }
+
+        h2 {
+            color: #1e3a8a;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* FORM */
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+
+            font-size: 14px;
+            background: white;
+            color: #334155;
+
+            outline: none;
+        }
+
+        select:focus {
+            border-color: #2563eb;
+        }
+
+        /* BUTTON */
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 13px;
+
+            background: #2563eb;
+            color: white;
+
+            border: none;
+            border-radius: 8px;
+
+            font-size: 15px;
+            font-weight: 600;
+
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button i {
+            margin-right: 7px;
+        }
+
+        /* BACK */
+
+        .back {
+            display: block;
+            margin-top: 20px;
+
+            text-align: center;
+
+            color: #2563eb;
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back:hover {
+            color: #1d4ed8;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width:600px) {
+
+            .container {
+                margin: 30px auto;
+                padding: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="header-icon">
+
+            <i class="fas fa-calendar-check"></i>
+
+        </div>
+
+        <h2>
+            Mark Student Attendance
+        </h2>
+
+        <p class="subtitle">
+            Record today's attendance for a student.
+        </p>
+
+    </div>
+
+
+    <!-- FORM -->
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <label>
+            Select Student
+        </label>
+
+        <select name="student" required>
+
+            <option value="">
+                -- Select Student --
+            </option>
+
+            {% for student in students %}
+
+            <option value="{{ student.id }}">
+
+                {{ student.full_name }}
+                -
+                {{ student.roll_number }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label>
+            Attendance Status
+        </label>
+
+        <select name="status" required>
+
+            <option value="">
+                -- Select Status --
+            </option>
+
+            <option value="Present">
+                Present
+            </option>
+
+            <option value="Absent">
+                Absent
+            </option>
+
+        </select>
+
+
+        <button type="submit">
+
+            <i class="fas fa-save"></i>
+            Save Attendance
+
+        </button>
+
+    </form>
+
+
+    <!-- BACK -->
+
+    <a
+        href="{% url 'teacher_dashboard' %}"
+        class="back"
+    >
+
+        ← Back to Teacher Dashboard
+
+    </a>
+
+</div>
+
+</body>
+
+</html>

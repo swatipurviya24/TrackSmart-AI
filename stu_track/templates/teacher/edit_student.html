@@ -1,0 +1,9 @@
+<h3>Edit Student Info</h3>
+<form method="post">
+    {% csrf_token %}
+    <label>Roll No:</label>
+    <input type="text" name="roll_number" value="{{ student.roll_number }}"><br><br>
+    <label>Department:</label>
+    <input type="text" name="department" value="{{ student.department }}"><br><br>
+    <button type="submit">Save</button>
+</form>

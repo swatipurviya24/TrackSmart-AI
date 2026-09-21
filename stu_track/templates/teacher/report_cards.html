@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Report Cards | TrackSmart AI</title>
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        /* HEADER */
+
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+        }
+
+        .header h2 {
+            color: #1e3a8a;
+            margin-bottom: 6px;
+        }
+
+        .header h2 i {
+            margin-right: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* STUDENT LIST */
+
+        .student-list {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+        }
+
+        .student-list h3 {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        /* STUDENT */
+
+        .student {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            gap: 15px;
+        }
+
+        .student:last-child {
+            border-bottom: none;
+        }
+
+        .student-info strong {
+            display: block;
+            color: #334155;
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .student-info span {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* BUTTON */
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        /* EMPTY */
+
+        .empty {
+            color: #94a3b8;
+            padding: 15px 0;
+        }
+
+        /* BACK */
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .back:hover {
+            color: #1d4ed8;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 600px) {
+
+            .container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+
+            .student {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h2>
+            <i class="fas fa-file-alt"></i>
+            Report Cards
+        </h2>
+
+        <p>
+            Select a student to view their academic report card.
+        </p>
+
+    </div>
+
+
+    <!-- STUDENTS -->
+
+    <div class="student-list">
+
+        <h3>
+            <i class="fas fa-user-graduate"></i>
+            Students
+        </h3>
+
+
+        {% for student in students %}
+
+        <div class="student">
+
+            <div class="student-info">
+
+                <strong>
+                    {{ student.full_name }}
+                </strong>
+
+                <span>
+                    Roll No: {{ student.roll_number }}
+                    |
+                    Class: {{ student.department }}
+                </span>
+
+            </div>
+
+
+            <a
+                href="{% url 'teacher_student_report' student.id %}"
+                class="btn"
+            >
+
+                <i class="fas fa-eye"></i>
+                View Report
+
+            </a>
+
+        </div>
+
+
+        {% empty %}
+
+        <p class="empty">
+            No students found.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- BACK -->
+
+    <a href="{% url 'teacher_dashboard' %}" class="back">
+
+        ← Back to Teacher Dashboard
+
+    </a>
+
+</div>
+
+</body>
+
+</html>

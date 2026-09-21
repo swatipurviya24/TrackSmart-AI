@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Behavior | TrackSmart AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f7fc;
+            padding: 30px;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 30px;
+            font-size: 25px;
+        }
+
+        .section {
+            padding: 22px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            color: #1e3a8a;
+            font-size: 19px;
+            margin-bottom: 8px;
+        }
+
+        .section p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 7px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        select,
+        button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 14px;
+        }
+
+        select {
+            background: white;
+        }
+
+        .save-button {
+            margin-top: 25px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .save-button:hover {
+            background: #1d4ed8;
+        }
+
+        /* AI SECTION */
+
+        .ai-section {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+        }
+
+        .ai-section h2 {
+            color: #1d4ed8;
+        }
+
+        .ai-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .ai-button:hover {
+            background: #1d4ed8;
+        }
+
+        .back {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>🧠 Student Behavior</h1>
+
+
+    <!-- ================= MANUAL BEHAVIOR ================= -->
+
+    <div class="section">
+
+        <h2>📝 Manual Behavior Logging</h2>
+
+        <p>
+            Select a student and manually record their current behavior.
+        </p>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <label>Select Student</label>
+
+            <select name="student" required>
+
+                <option value="">
+                    -- Select Student --
+                </option>
+
+                {% for student in students %}
+
+                    <option value="{{ student.id }}">
+                        {{ student.full_name }} - {{ student.roll_number }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <label>Behavior</label>
+
+            <select name="activity" required>
+
+                <option value="">
+                    -- Select Behavior --
+                </option>
+
+                <option value="Attentive">
+                    Attentive
+                </option>
+
+                <option value="Sleeping">
+                    Sleeping
+                </option>
+
+                <option value="Using Mobile">
+                    Using Mobile
+                </option>
+
+                <option value="Talking">
+                    Talking
+                </option>
+
+                <option value="Irrelevant">
+                    Irrelevant
+                </option>
+
+            </select>
+
+
+            <button type="submit" class="save-button">
+                Save Behavior
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- ================= AI BEHAVIOR ================= -->
+
+    <div class="section ai-section">
+
+        <h2>🤖 AI Behavior Detection</h2>
+
+        <p>
+            Upload a student image and let the AI model
+            automatically detect the student's behavior.
+        </p>
+
+        <a href="/teacher/ai-behavior/" class="ai-button">
+            Open AI Behavior Detection
+        </a>
+
+    </div>
+
+
+    <!-- ================= BACK ================= -->
+
+    <a href="{% url 'teacher_dashboard' %}" class="back">
+        ← Back to Teacher Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

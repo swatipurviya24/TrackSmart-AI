@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Notice | TrackSmart</title>
+
+    <style>
+        body {
+            font-family: Segoe UI, sans-serif;
+            background: #f4f7fc;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1565c0;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #1565c0;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0d47a1;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #1565c0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>📢 Create Notice</h2>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>Notice Title</label>
+        <input type="text"
+               name="title"
+               placeholder="Enter notice title"
+               required>
+
+        <label>Description</label>
+        <textarea name="description"
+                  placeholder="Enter notice details"
+                  required></textarea>
+
+        <label>Audience</label>
+
+        <select name="audience" required>
+
+            <option value="All">All</option>
+            <option value="Students">Students</option>
+            <option value="Teachers">Teachers</option>
+
+        </select>
+
+        <button type="submit">
+            Publish Notice
+        </button>
+
+    </form>
+
+    <a href="{% url 'admin_dashboard' %}" class="back">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

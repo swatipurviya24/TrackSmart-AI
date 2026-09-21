@@ -1,0 +1,19 @@
+<h3>Log Student Behavior</h3>
+<form method="post">
+    {% csrf_token %}
+    <label>Student:</label>
+    <select name="student">
+        {% for s in students %}
+        <option value="{{ s.id }}">{{ s.user.get_full_name }}</option>
+        {% endfor %}
+    </select><br><br>
+    <label>Activity:</label>
+    <select name="activity">
+        <option value="Attentive">Attentive</option>
+        <option value="Sleeping">Sleeping</option>
+        <option value="Using Mobile">Using Mobile</option>
+        <option value="Talking">Talking</option>
+        <option value="Irrelevant Activity">Irrelevant Activity</option>
+    </select><br><br>
+    <button type="submit">Log</button>
+</form>

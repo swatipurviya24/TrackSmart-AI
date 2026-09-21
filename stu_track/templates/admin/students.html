@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Students | TrackSmart AI</title>
+
+    <style>
+
+    body{
+        font-family:Segoe UI,sans-serif;
+        background:#f4f7fc;
+        padding:30px;
+    }
+
+    .container{
+        background:white;
+        padding:25px;
+        border-radius:15px;
+        box-shadow:0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    h2{
+        color:#1e3a8a;
+        margin-bottom:20px;
+    }
+
+    .top-section{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:20px;
+    }
+
+    .btn{
+        background:#2563eb;
+        color:white;
+        text-decoration:none;
+        padding:12px 18px;
+        border-radius:8px;
+        font-weight:bold;
+    }
+
+    .btn:hover{
+        background:#1d4ed8;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+    }
+
+    table th{
+        background:#2563eb;
+        color:white;
+        padding:12px;
+        text-align:left;
+    }
+
+    table td{
+        padding:12px;
+        border-bottom:1px solid #ddd;
+    }
+
+    tr:hover{
+        background:#f8fafc;
+    }
+
+    .edit-btn{
+        color:#2563eb;
+        text-decoration:none;
+        font-weight:bold;
+    }
+
+    .delete-btn{
+        color:red;
+        text-decoration:none;
+        font-weight:bold;
+    }
+
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="top-section">
+
+        <h2>Manage Students</h2>
+
+        <a href="{% url 'add_students' %}" class="btn">
+            + Add Student
+        </a>
+
+    </div>
+
+    <table>
+
+        <tr>
+            <th>Name</th>
+            <th>Roll No</th>
+            <th>Class</th>
+            <th>Fee Status</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for student in students %}
+
+        <tr>
+
+            <td>
+                {{ student.full_name|default:"No Name" }}
+            </td>
+
+            <td>
+                {{ student.roll_number }}
+            </td>
+
+            <td>
+                {{ student.department }}
+            </td>
+
+            <td>
+                {{ student.fee_status }}
+            </td>
+
+            <td>
+
+                <a href="{% url 'edit_student' student.id %}"
+                   class="edit-btn">
+                    Edit
+                </a>
+
+                |
+
+                <a href="{% url 'delete_student' student.id %}"
+                   class="delete-btn"
+                   onclick="return confirm('Delete this student?')">
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+            <td colspan="5">
+                No students found
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+<a href="{% url 'admin_dashboard' %}"
+   style="
+       display:block;
+       margin-top:20px;
+       text-align:center;
+       color:#2563eb;
+       text-decoration:none;
+       font-weight:600;
+   ">
+    ← Back to  Dashboard
+</a>
+
+</body>
+</html>

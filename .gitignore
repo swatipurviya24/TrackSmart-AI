@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+sysenv/
+
+# Django
+db.sqlite3
+
+# Environment variables
+.env
+
+# Uploaded files
+media/
+
+# Test images
+test_images/
+
+# Dataset
+dataset/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
