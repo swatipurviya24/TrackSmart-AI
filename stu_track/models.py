@@ -7,7 +7,7 @@ class Profile(models.Model):
         ('student', 'Student'),
         ('teacher', 'Teacher'),
         ('admin', 'Admin'),
-        ('parents','Parents'),
+        
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES,default='student')
@@ -32,10 +32,7 @@ def __str__(self):
         return self.user.get_full_name()
 
 class Attendance(models.Model):
-    student = models.ForeignKey(
-        Student,
-        on_delete=models.CASCADE
-    )
+    student = models.ForeignKey(Student,on_delete=models.CASCADE)
 
     date = models.DateField()
 
@@ -49,10 +46,14 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.student.full_name} - {self.date} - {self.status}"
+
+    
 class Marks(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100)
     marks = models.FloatField()
+
+
 
 class BehaviorLog(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
@@ -76,9 +77,9 @@ class Teacher(models.Model):
     name = models.CharField(max_length=100)
 
     subject = models.CharField(max_length=100)
-
+    
     class_assigned = models.CharField(max_length=50)
-
+    
     salary = models.IntegerField()
 
     def __str__(self):
