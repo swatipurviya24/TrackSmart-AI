@@ -24,11 +24,11 @@ class Student(models.Model):
     mother_name = models.CharField(max_length=100,blank=True,null=True)
     father_name = models.CharField(max_length=100,blank=True,null=True)
     dob = models.DateField(blank=True,null=True)
-    roll_number = models.CharField(max_length=20)
+    
     
 
     
-def __str__(self):
+    def __str__(self):
         return self.user.get_full_name()
 
 class Attendance(models.Model):

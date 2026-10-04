@@ -376,6 +376,21 @@ table tr:last-child td{
         </div>
 
     </div>
+    {% if created_username and created_password %}
+<div class="section">
+    <h3>Account Created Successfully!</h3>
+
+    <p>
+        <strong>Username:</strong> {{ created_username }}
+    </p>
+
+    <p>
+        <strong>Temporary Password:</strong> {{ created_password }}
+    </p>
+
+    <p>Please share these credentials with the student.</p>
+</div>
+{% endif %}
 
 
     <!-- ================= STATISTICS ================= -->

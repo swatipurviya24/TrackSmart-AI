@@ -92,6 +92,22 @@
         </a>
 
     </div>
+    
+{% if created_username and created_password %}
+<div class="section">
+    <h3>Teacher Account Created Successfully!</h3>
+
+    <p>
+        <strong>Username:</strong> {{ created_username }}
+    </p>
+
+    <p>
+        <strong>Temporary Password:</strong> {{ created_password }}
+    </p>
+
+    <p>Please share these credentials securely with the teacher.</p>
+</div>
+{% endif %}
 
     <table>
 

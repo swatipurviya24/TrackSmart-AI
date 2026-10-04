@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Profile,Student,BehaviorLog,Teacher,Attendance,Marks,Notice
+from django.utils.crypto import get_random_string
 
 from django.core.files.storage import FileSystemStorage
 from .ml.predictor import predict_behavior
@@ -11,13 +12,17 @@ from django.http import HttpResponseForbidden
 from functools import wraps
 
 
+
 def admin_required(view_func):
 
     @wraps(view_func)
     @login_required
     def wrapper(request, *args, **kwargs):
 
-        profile = Profile.objects.get(user=request.user)
+        profile = Profile.objects.filter(user=request.user).first()
+
+        if profile is None:
+            return HttpResponseForbidden("User profile not found.")
 
         if profile.role != 'admin':
             return HttpResponseForbidden(
@@ -31,13 +36,17 @@ def admin_required(view_func):
 
 
 
+
 def teacher_required(view_func):
 
     @wraps(view_func)
     @login_required
     def wrapper(request, *args, **kwargs):
 
-        profile = Profile.objects.get(user=request.user)
+        profile = Profile.objects.filter(user=request.user).first()
+
+        if profile is None:
+            return HttpResponseForbidden("User profile not found.")
 
         if profile.role not in ['teacher', 'admin']:
             return HttpResponseForbidden(
@@ -51,13 +60,17 @@ def teacher_required(view_func):
 
 
 
+
 def student_required(view_func):
 
     @wraps(view_func)
     @login_required
     def wrapper(request, *args, **kwargs):
 
-        profile = Profile.objects.get(user=request.user)
+        profile = Profile.objects.filter(user=request.user).first()
+
+        if profile is None:
+            return HttpResponseForbidden("User profile not found.")
 
         if profile.role != 'student':
             return HttpResponseForbidden(
@@ -69,6 +82,7 @@ def student_required(view_func):
     return wrapper
 
 
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -78,7 +92,11 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user:
-            profile = Profile.objects.get(user=user)
+            profile = Profile.objects.filter(user=user).first()
+
+            if profile is None:
+                return render(request, 'login.html', {
+        'error': 'User profile not found.'})
 
             # CHECK ROLE MATCH
             if profile.role != role:
@@ -216,33 +234,37 @@ def ai_behavior_detection(request):
         filename = fs.save(image_file.name, image_file)
         file_path = fs.path(filename)
 
-        prediction = predict_behavior(file_path)
+        try:
+            prediction = predict_behavior(file_path)
 
-        # Save AI result into database
-        BehaviorLog.objects.create(
-            student_id=student_id,
-            activity=prediction
-        )
+            # Save AI result into database
+            BehaviorLog.objects.create(
+                student_id=student_id,
+                activity=prediction
+            )
+
+        finally:
+            # Delete the uploaded image after prediction
+            if fs.exists(filename):
+                fs.delete(filename)
 
     return render(
         request,
         'teacher/ai_behavior.html',
-        {'students': students, 'prediction': prediction}
-
-    )
+        {'students': students, 'prediction': prediction})
 #===============================================================================================================
 #dashboard
 
 
 @student_required
 def student_marks(request):
-    student = Student.objects.get(user=request.user)
+    student=get_object_or_404(Student, user=request.user)
     marks = Marks.objects.filter(student=student)
     return render(request, 'student/marks.html', {'marks': marks})
 
 @student_required
 def student_attendance(request):
-    student = Student.objects.get(user=request.user)
+    student = get_object_or_404(Student, user=request.user)
 
     attendance = Attendance.objects.filter(
         student=student
@@ -257,7 +279,7 @@ def student_attendance(request):
 
 @student_required
 def student_report(request):
-    student = Student.objects.get(user=request.user)
+    student = get_object_or_404(Student, user=request.user)
 
     marks = Marks.objects.filter(student=student)
 
@@ -281,7 +303,7 @@ def student_report(request):
 
 @student_required
 def student_behavior(request):
-    student = Student.objects.get(user=request.user)
+    student = get_object_or_404(Student, user=request.user)
 
     behaviors = BehaviorLog.objects.filter(student=student)
 
@@ -294,6 +316,7 @@ def student_behavior(request):
 
 
 #=====================================Admin============================================================
+
 @admin_required
 def admin_dashboard(request):
 
@@ -308,19 +331,20 @@ def admin_dashboard(request):
     ai_alerts = BehaviorLog.objects.count()
 
     total_classes = Student.objects.values(
-    'department'
-).distinct().count()
+        'department'
+    ).distinct().count()
 
     recent_logs = BehaviorLog.objects.order_by(
-    '-timestamp'
-    )[:10]
+        '-timestamp' )[:10]
 
     attendance_today = Attendance.objects.filter(
-    date=timezone.now().date()
-    ).count()
-
+        date=timezone.now().date() ).count()
 
     recent_notices = Notice.objects.order_by('-date')[:3]
+
+    # Get the newly created account credentials
+    created_username = request.session.pop('created_username', None)
+    created_password = request.session.pop('created_password', None)
 
     context = {
         'total_students': total_students,
@@ -331,23 +355,36 @@ def admin_dashboard(request):
         'attendance_today': attendance_today,
         'behavior_logs': recent_logs,
         'notices': recent_notices,
-            }
+        'created_username': created_username,
+        'created_password': created_password,
+    }
 
     return render(
-    request,
+        request,
         'dashboards/admin_dashboard.html',
-        context
-    )
+        context)
+
+
 
 @admin_required
 def manage_teachers(request):
 
     teachers = Teacher.objects.all()
 
+    # Get the newly created teacher credentials
+    created_username = request.session.pop('created_username', None)
+    created_password = request.session.pop('created_password', None)
+
+    context = {
+        'teachers': teachers,
+        'created_username': created_username,
+        'created_password': created_password,
+    }
+
     return render(
         request,
         'admin/teachers.html',
-        {'teachers': teachers}
+        context
     )
 
 
@@ -355,10 +392,11 @@ def manage_teachers(request):
 def add_teacher(request):
     if request.method == 'POST':
         username = request.POST['name']
+        password=get_random_string(8)
 
         user = User.objects.create_user(
             username=username,
-            password='teacher123'
+            password=password
         )
 
         Profile.objects.create(
@@ -375,6 +413,9 @@ def add_teacher(request):
             salary=request.POST['salary']
         )
 
+        request.session['created_username'] = username
+        request.session['created_password'] = password
+
         return redirect('manage_teachers')
 
     return render(request, 'admin/add_teacher.html')
@@ -383,7 +424,7 @@ def add_teacher(request):
 @admin_required
 def edit_teacher(request, teacher_id):
 
-    teacher = Teacher.objects.get(id=teacher_id)
+    teacher = get_object_or_404(Teacher, id=teacher_id)
 
     if request.method == 'POST':
 
@@ -404,7 +445,7 @@ def edit_teacher(request, teacher_id):
 @admin_required
 def delete_teacher(request, teacher_id):
 
-    teacher = Teacher.objects.get(id=teacher_id)
+    teacher = get_object_or_404(Teacher, id=teacher_id)
 
     teacher.delete()
 
@@ -426,7 +467,7 @@ from django.contrib.auth.models import User
 @admin_required
 def edit_student(request, student_id):
 
-    student = Student.objects.get(id=student_id)
+    student = get_object_or_404(Student, id=student_id)
 
     if request.method == 'POST':
 
@@ -454,10 +495,11 @@ def add_students(request):
     if request.method == 'POST':
 
         username = request.POST['roll_number']
+        password = get_random_string(8)
 
         user = User.objects.create_user(
             username=username,
-            password='student123'
+            password=password
             
         )
         Profile.objects.create(
@@ -475,6 +517,9 @@ def add_students(request):
             department=request.POST['department'],
             fee_status=request.POST['fee_status']
         )
+        request.session['created_username'] = username
+        request.session['created_password'] = password
+
 
         return redirect('admin_dashboard')
 
@@ -500,7 +545,7 @@ def manage_students(request):
 @admin_required
 def delete_student(request, student_id):
 
-    student = Student.objects.get(id=student_id)
+    student = get_object_or_404(Student, id=student_id)
 
     student.delete()
 
@@ -529,7 +574,10 @@ def add_notice(request):
 
 @login_required
 def notices(request):
-    profile = Profile.objects.get(user=request.user)
+    profile = Profile.objects.filter(user=request.user).first()
+
+    if profile is None:
+        return HttpResponseForbidden("User profile not found.")
 
     if profile.role == 'student':
         audience = ['All', 'Students']
@@ -566,7 +614,7 @@ def teacher_report_cards(request):
 @teacher_required
 def teacher_student_report(request, student_id):
 
-    student = Student.objects.get(id=student_id)
+    student = get_object_or_404(Student, id=student_id)
 
     marks = Marks.objects.filter(student=student)
 
@@ -636,7 +684,7 @@ def teacher_dashboard(request):
 @student_required
 def student_dashboard(request):
 
-    student = Student.objects.get(user=request.user)
+    student = get_object_or_404(Student, user=request.user)
 
     marks = Marks.objects.filter(student=student)
 

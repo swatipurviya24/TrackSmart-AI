@@ -1,6 +1,8 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .ml.predictor import predict_behavior
+import os
 
 from .models import Student, Attendance, Marks, BehaviorLog
 from .serializers import (
@@ -13,6 +15,7 @@ from .serializers import (
 
 # Get all students
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def api_students(request):
 
     students = Student.objects.all()
@@ -27,6 +30,7 @@ def api_students(request):
 
 # Get attendance of one student
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def api_attendance(request, student_id):
 
     attendance = Attendance.objects.filter(
@@ -43,6 +47,7 @@ def api_attendance(request, student_id):
 
 # Get marks of one student
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def api_marks(request, student_id):
 
     marks = Marks.objects.filter(
@@ -59,6 +64,7 @@ def api_marks(request, student_id):
 
 # Get behavior of one student
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def api_behavior(request, student_id):
 
     behaviors = BehaviorLog.objects.filter(
@@ -76,6 +82,7 @@ def api_behavior(request, student_id):
 
 # AI behavior prediction
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def api_predict_behavior(request):
 
     if 'image' not in request.FILES:
@@ -87,12 +94,17 @@ def api_predict_behavior(request):
 
     image_path = 'temp_ai_image.jpg'
 
-    with open(image_path, 'wb+') as file:
-        for chunk in image_file.chunks():
-            file.write(chunk)
+    try:
+        with open(image_path, 'wb+') as file:
+            for chunk in image_file.chunks():
+                file.write(chunk)
 
-    prediction = predict_behavior(image_path)
+        prediction = predict_behavior(image_path)
 
-    return Response({
-        'prediction': prediction
-    })
+        return Response({
+            'prediction': prediction
+        })
+
+    finally:
+        if os.path.exists(image_path):
+            os.remove(image_path)
