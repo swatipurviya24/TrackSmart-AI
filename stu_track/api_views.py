@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .ml.predictor import predict_behavior
 import os
+import uuid
 
 from .models import Student, Attendance, Marks, BehaviorLog
 from .serializers import (
@@ -92,7 +93,7 @@ def api_predict_behavior(request):
 
     image_file = request.FILES['image']
 
-    image_path = 'temp_ai_image.jpg'
+    image_path = image_path = f'temp_ai_{uuid.uuid4().hex}.jpg'
 
     try:
         with open(image_path, 'wb+') as file:
@@ -108,3 +109,9 @@ def api_predict_behavior(request):
     finally:
         if os.path.exists(image_path):
             os.remove(image_path)
+
+
+
+
+
+           

@@ -32,7 +32,7 @@ class Student(models.Model):
         return self.user.get_full_name()
 
 class Attendance(models.Model):
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
     date = models.DateField()
 
@@ -43,6 +43,14 @@ class Attendance(models.Model):
             ('Absent', 'Absent')
         ]
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['student', 'date'],
+                name='unique_student_attendance_date'
+            )
+        ]
 
     def __str__(self):
         return f"{self.student.full_name} - {self.date} - {self.status}"
@@ -58,7 +66,16 @@ class Marks(models.Model):
 class BehaviorLog(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
-    activity = models.CharField(max_length=50)  # Attentive, Sleeping, etc.
+
+    activity = models.CharField(
+        max_length=50,
+        choices=[
+            ('Attentive', 'Attentive'),
+            ('Irrelevant', 'Irrelevant'),
+            ('Sleeping', 'Sleeping'),
+            ('Using_Mobile', 'Using_Mobile'),
+        ]
+    )
 
     def __str__(self):
         return f"{self.student.user.username} - {self.activity} @ {self.timestamp}"
