@@ -181,9 +181,9 @@ def dashboard_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-#=============================Teacher==============================================
-from .models import Student, Attendance, Marks, BehaviorLog
-from django.utils import timezone
+#=============================Teacher_dashboard==============================================
+
+
 
 @teacher_required
 def update_marks(request):
@@ -217,10 +217,6 @@ def log_behavior(request):
 
 
 
-
-
-
-#======================================================================
 @teacher_required
 def ai_behavior_detection(request):
     prediction = None
@@ -252,8 +248,9 @@ def ai_behavior_detection(request):
         request,
         'teacher/ai_behavior.html',
         {'students': students, 'prediction': prediction})
-#===============================================================================================================
-#dashboard
+
+#========================================student_dashboard=======================================================================
+
 
 
 @student_required
@@ -442,6 +439,8 @@ def edit_teacher(request, teacher_id):
         'admin/edit_teacher.html',
         {'teacher': teacher}
     )
+
+
 @admin_required
 def delete_teacher(request, teacher_id):
 
@@ -453,41 +452,6 @@ def delete_teacher(request, teacher_id):
 
 
 
-
-
-
-
-
-
-
-
-
-
-from django.contrib.auth.models import User
-@admin_required
-def edit_student(request, student_id):
-
-    student = get_object_or_404(Student, id=student_id)
-
-    if request.method == 'POST':
-
-        student.full_name = request.POST['full_name']
-        student.father_name = request.POST['father_name']
-        student.mother_name = request.POST['mother_name']
-        student.roll_number = request.POST['roll_number']
-        student.department = request.POST['department']
-        student.fee_status = request.POST['fee_status']
-        student.dob = request.POST['dob']
-
-        student.save()
-
-        return redirect('manage_students')
-
-    return render(
-        request,
-        'admin/edit_student.html',
-        {'student': student}
-    )
 
 @admin_required
 def add_students(request):
@@ -524,6 +488,33 @@ def add_students(request):
         return redirect('admin_dashboard')
 
     return render(request, 'admin/add_students.html')
+
+
+
+@admin_required
+def edit_student(request, student_id):
+
+    student = get_object_or_404(Student, id=student_id)
+
+    if request.method == 'POST':
+
+        student.full_name = request.POST['full_name']
+        student.father_name = request.POST['father_name']
+        student.mother_name = request.POST['mother_name']
+        student.roll_number = request.POST['roll_number']
+        student.department = request.POST['department']
+        student.fee_status = request.POST['fee_status']
+        student.dob = request.POST['dob']
+
+        student.save()
+
+        return redirect('manage_students')
+
+    return render(
+        request,
+        'admin/edit_student.html',
+        {'student': student}
+    )
 
 
 
