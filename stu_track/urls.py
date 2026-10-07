@@ -20,6 +20,7 @@ urlpatterns = [
     path('teacher/report-card/<int:student_id>/',views.teacher_student_report,name='teacher_student_report'),
 
     path('teacher-dashboard/',views.teacher_dashboard,name='teacher_dashboard' ),
+    path('teacher/attendance/view/',views.teacher_view_attendance,name='teacher_view_attendance'),
 
     
 

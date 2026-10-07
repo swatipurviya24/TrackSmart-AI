@@ -1,0 +1,232 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>View Attendance - Track Smart</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            color: #1e293b;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: #0f172a;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 23px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 13px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .main {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+        }
+
+        .table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-container h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 14px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .present {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .absent {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+    <div class="logo">
+        Track Smart
+    </div>
+
+    <a href="{% url 'teacher_dashboard' %}">
+        Dashboard
+    </a>
+
+    <a href="{% url 'teacher_view_attendance' %}" class="active">
+        Attendance
+    </a>
+
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
+
+</div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+        <div class="header">
+            <h1>View Attendance</h1>
+            <p>View all student attendance records.</p>
+        </div>
+ 
+
+        <div class="table-container">
+
+            <h2>Attendance Records</h2>
+
+            {% if attendance %}
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Student Name</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for record in attendance %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td>
+                                    {{ record.student.full_name }}
+                                </td>
+
+                                <td>
+                                    {{ record.date }}
+                                </td>
+
+                                <td>
+
+                                    {% if record.status == "Present" %}
+                                        <span class="present">
+                                            Present
+                                        </span>
+
+                                    {% elif record.status == "Absent" %}
+                                        <span class="absent">
+                                            Absent
+                                        </span>
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <div class="empty">
+                    No attendance records found.
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+```

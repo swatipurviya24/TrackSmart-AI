@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Profile,Student,BehaviorLog,Teacher,Attendance,Marks,Notice
 from django.utils.crypto import get_random_string
+from django.db import IntegrityError
+from django.contrib import messages
 
 from django.core.files.storage import FileSystemStorage
 from .ml.predictor import predict_behavior
@@ -181,7 +183,7 @@ def dashboard_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-#=============================Teacher_dashboard==============================================
+#=============================Teacher_dashboard=======================================================================
 
 
 
@@ -200,9 +202,41 @@ def mark_attendance(request):
     if request.method == 'POST':
         student_id = request.POST['student']
         status = request.POST['status']
-        Attendance.objects.create(student_id=student_id, date=timezone.now().date(), status=status)
+
+        try:
+            Attendance.objects.create(
+                student_id=student_id,
+                date=timezone.now().date(),
+                status=status
+            )
+
+        except IntegrityError:messages.error(request,
+        'Attendance has already been marked for this student today.'
+    )
+
     students = Student.objects.all()
-    return render(request, 'teacher/mark_attendance.html', {'students': students})
+
+    return render(
+        request,
+        'teacher/mark_attendance.html',
+        {'students': students}
+    )
+
+
+@teacher_required
+def teacher_view_attendance(request):
+    attendance = Attendance.objects.select_related(
+        'student'
+    ).order_by('-date', 'student__full_name')
+
+    return render(
+        request,
+        'teacher/attendance.html',
+        {
+            'attendance': attendance
+        }
+    )
+
 
 
 @teacher_required
