@@ -332,6 +332,11 @@ table tr:last-child td{
     <a href="{% url 'ai_behavior' %}">
         <i class="fas fa-brain"></i> AI Monitoring
     </a>
+    
+    <a href="{% url 'behavior_logs' %}">
+        <i class="fas fa-history"></i> Behavior Logs
+    </a>
+
 
     <a href="#">
         <i class="fas fa-file-alt"></i> Results
@@ -525,9 +530,9 @@ table tr:last-child td{
                 Recent AI Behavior Logs
             </h3>
 
-            <a href="#" class="view-link">
-                View All
-            </a>
+            <a href="{% url 'behavior_logs' %}" class="view-link">
+    View All
+</a>
 
         </div>
 
