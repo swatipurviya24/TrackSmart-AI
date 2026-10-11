@@ -12,7 +12,9 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.http import HttpResponseForbidden
 from functools import wraps
+import logging
 
+logger = logging.getLogger(__name__)
 
 
 def admin_required(view_func):
@@ -251,37 +253,57 @@ def log_behavior(request):
 
 
 
+
 @teacher_required
 def ai_behavior_detection(request):
     prediction = None
+    error_message = None
     students = Student.objects.all()
 
     if request.method == 'POST' and request.FILES.get('image'):
-        student_id = request.POST['student']
-        image_file = request.FILES['image']
-
         fs = FileSystemStorage()
-        filename = fs.save(image_file.name, image_file)
-        file_path = fs.path(filename)
+        filename = None
 
         try:
+            student_id = request.POST.get('student')
+            image_file = request.FILES['image']
+
+            if not student_id:
+                raise ValueError("No student was selected.")
+
+            filename = fs.save(image_file.name, image_file)
+            file_path = fs.path(filename)
+
+            # Predict behavior using the AI model
             prediction = predict_behavior(file_path)
 
-            # Save AI result into database
+            # Save the prediction in the database
             BehaviorLog.objects.create(
                 student_id=student_id,
                 activity=prediction
             )
 
+        except Exception:
+            logger.exception("AI behavior prediction failed.")
+            prediction = None
+            error_message = (
+                "Prediction failed. Please try again or contact the administrator."
+            )
+
         finally:
-            # Delete the uploaded image after prediction
-            if fs.exists(filename):
+            if filename and fs.exists(filename):
                 fs.delete(filename)
 
     return render(
         request,
         'teacher/ai_behavior.html',
-        {'students': students, 'prediction': prediction})
+        {
+            'students': students,
+            'prediction': prediction,
+            'error_message': error_message,
+        }
+    )
+
 
 #========================================student_dashboard=======================================================================
 
