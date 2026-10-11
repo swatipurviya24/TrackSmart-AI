@@ -305,6 +305,24 @@ def ai_behavior_detection(request):
     )
 
 
+@teacher_required
+def behavior_logs(request):
+    logs = (
+        BehaviorLog.objects
+        .select_related('student')
+        .all()
+        .order_by('-id')
+    )
+
+    return render(
+        request,
+        'teacher/behavior_logs.html',
+        {'logs': logs}
+    )
+
+
+
+
 #========================================student_dashboard=======================================================================
 
 

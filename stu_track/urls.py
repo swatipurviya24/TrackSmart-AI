@@ -21,6 +21,7 @@ urlpatterns = [
 
     path('teacher-dashboard/',views.teacher_dashboard,name='teacher_dashboard' ),
     path('teacher/attendance/view/',views.teacher_view_attendance,name='teacher_view_attendance'),
+    path('teacher/behavior-logs/',views.behavior_logs,name='behavior_logs'),
 
     
 
